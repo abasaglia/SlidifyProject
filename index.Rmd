@@ -19,15 +19,20 @@ knit        : slidify::knit2slides
 
 --- .class #id 
 
-## Slide 2
+## Slide 2 
+
 --- .class #id 
+
 ## Slide 3
 
 --- .class #id 
+
 ## Slide 4
 
 --- .class #id 
+
 ## Slide 5
 
---- .class #id 
+
+
 
