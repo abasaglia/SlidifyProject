@@ -13,7 +13,9 @@
     media="only screen and (max-device-width: 480px)" >
   <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
   <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
-  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/nvd3/css/nv.d3.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/rNVD3.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
 
   
   <!-- Grab CDN jQuery, fall back to local if offline -->
@@ -23,7 +25,11 @@
     src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
   </script>
   
-  
+  <script src="libraries/widgets/nvd3/js/jquery-1.8.2.min.js"></script>
+<script src="libraries/widgets/nvd3/js/d3.v3.min.js"></script>
+<script src="libraries/widgets/nvd3/js/nv.d3.min-new.js"></script>
+<script src="libraries/widgets/nvd3/js/fisheye.js"></script>
+
 
 </head>
 <body style="opacity: 0">
@@ -33,7 +39,7 @@
         <slide class="title-slide segue nobackground">
   <hgroup class="auto-fadein">
     <h1>Developing Data Products - Course Project</h1>
-    <h2>Italian historic population surveys - population by age (1881-2011)</h2>
+    <h2>Milano  City. Historic population surveys - population by age (1881-2011)</h2>
     <p>abasaglia<br/></p>
   </hgroup>
   <article></article>  
@@ -43,55 +49,461 @@
     <!-- SLIDES -->
     <slide class="" id="slide-1" style="background:;">
   <hgroup>
-    <h2>Read-And-Delete</h2>
+    <h2>Data</h2>
   </hgroup>
   <article data-timings="">
-    <ol>
-<li>Edit YAML front matter</li>
-<li>Write using R Markdown</li>
-<li>Use an empty line followed by three dashes to separate slides!</li>
-</ol>
+    <p>The data has been downloaded from <a href="http://dati.comune.milano.it/dato/item/300-300%20-%20Popolazione:%20censimenti%20storici%20-%20popolazione%20per%20et%C3%A0%20(1881-2011).html">http://dati.comune.milano.it/dato/item/300-300%20-%20Popolazione:%20censimenti%20storici%20-%20popolazione%20per%20et%C3%A0%20(1881-2011).html</a></p>
+
+<p>This dataset contains the Italian historic population surveys for the Milano City.</p>
+
+<p>Every row contains:</p>
+
+<ul>
+<li>Year of the survey (no survey for 1891 and 1941)</li>
+<li>Age</li>
+<li>Sex</li>
+<li>How many people with that age and sex</li>
+</ul>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="class" id="id" style="background:;">
+<slide class="" id="slide-2" style="background:;">
   <hgroup>
-    <h2>Slide 2</h2>
+    <h2>Graph whith the Age distribution by Year</h2>
   </hgroup>
   <article data-timings="">
-    <p>--- .class #id </p>
-
-<h2>Slide 3</h2>
+    <div class="row-fluid">
+  <div class="span4">
+    <form class="well">
+      <div>
+        <label class="control-label" for="YYYY">Year</label>
+        <input id="YYYY" type="slider" name="YYYY" value="1881" class="jslider" data-from="1881" data-to="2011" data-step="10" data-skin="plastic" data-round="FALSE" data-locale="us" data-format="#,##0.#####" data-scale="|;|;|;|;|;|;|;|;|;|;|;|;|;|" data-smooth="FALSE"/>
+      </div>
+    </form>
+  </div>
+  <div class="span8">
+    <div id="nvd3plot" class="shiny-html-output nvd3 rChart"></div>
+  </div>
+</div>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="class" id="id" style="background:;">
-  <hgroup>
-    <h2>Slide 4</h2>
-  </hgroup>
+<slide class="" id="slide-3" style="background:;">
   <article data-timings="">
-    
+    <p>Milano - Total population by Year</p>
+
+<div id = 'chart1' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart1()
+    });
+    function drawchart1(){  
+      var opts = {
+ "dom": "chart1",
+"width":    600,
+"height":    400,
+"x": "Group.1",
+"y": "x",
+"group": "Group.2",
+"type": "lineChart",
+"id": "chart1" 
+},
+        data = [
+ {
+ "Group.1":           1881,
+"Group.2": "Donne",
+"x":         157756 
+},
+{
+ "Group.1":           1901,
+"Group.2": "Donne",
+"x":         247093 
+},
+{
+ "Group.1":           1911,
+"Group.2": "Donne",
+"x":         301323 
+},
+{
+ "Group.1":           1921,
+"Group.2": "Donne",
+"x":         371640 
+},
+{
+ "Group.1":           1931,
+"Group.2": "Donne",
+"x":         517348 
+},
+{
+ "Group.1":           1951,
+"Group.2": "Donne",
+"x":         678879 
+},
+{
+ "Group.1":           1961,
+"Group.2": "Donne",
+"x":         840888 
+},
+{
+ "Group.1":           1971,
+"Group.2": "Donne",
+"x":         916216 
+},
+{
+ "Group.1":           1981,
+"Group.2": "Donne",
+"x":         851390 
+},
+{
+ "Group.1":           1991,
+"Group.2": "Donne",
+"x":         728920 
+},
+{
+ "Group.1":           2001,
+"Group.2": "Donne",
+"x":         670083 
+},
+{
+ "Group.1":           2011,
+"Group.2": "Donne",
+"x":         661145 
+},
+{
+ "Group.1":           1881,
+"Group.2": "Uomini",
+"x":         162536 
+},
+{
+ "Group.1":           1901,
+"Group.2": "Uomini",
+"x":         242991 
+},
+{
+ "Group.1":           1911,
+"Group.2": "Uomini",
+"x":         297877 
+},
+{
+ "Group.1":           1921,
+"Group.2": "Uomini",
+"x":         346581 
+},
+{
+ "Group.1":           1931,
+"Group.2": "Uomini",
+"x":         474580 
+},
+{
+ "Group.1":           1951,
+"Group.2": "Uomini",
+"x":         595366 
+},
+{
+ "Group.1":           1961,
+"Group.2": "Uomini",
+"x":         741646 
+},
+{
+ "Group.1":           1971,
+"Group.2": "Uomini",
+"x":         812580 
+},
+{
+ "Group.1":           1981,
+"Group.2": "Uomini",
+"x":         753259 
+},
+{
+ "Group.1":           1991,
+"Group.2": "Uomini",
+"x":         640311 
+},
+{
+ "Group.1":           2001,
+"Group.2": "Uomini",
+"x":         586128 
+},
+{
+ "Group.1":           2011,
+"Group.2": "Uomini",
+"x":         580978 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        
+          
+        
+
+        
+        
+        
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="class" id="id" style="background:;">
-  <hgroup>
-    <h2>Slide 5</h2>
-  </hgroup>
+<slide class="" id="slide-4" style="background:;">
   <article data-timings="">
-    
-  </article>
-  <!-- Presenter Notes -->
-</slide>
+    <p>Milano - Mean Age by Year</p>
 
-<slide class="class" id="id" style="background:;">
-  <article data-timings="">
-    
+<div id = 'chart2' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart2()
+    });
+    function drawchart2(){  
+      var opts = {
+ "dom": "chart2",
+"width":    600,
+"height":    400,
+"x": "Year",
+"y": "wmean",
+"group": "Sex",
+"type": "lineChart",
+"id": "chart2" 
+},
+        data = [
+ {
+ "Year":           1881,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 29.74740738863 
+},
+{
+ "Year":           1881,
+"Sex": "Uomini",
+"mean":             50,
+"wmean":  29.2758773441 
+},
+{
+ "Year":           1901,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 29.55349605209 
+},
+{
+ "Year":           1901,
+"Sex": "Uomini",
+"mean":             50,
+"wmean":  28.3835203773 
+},
+{
+ "Year":           1911,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 30.14443968764 
+},
+{
+ "Year":           1911,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 28.79242774702 
+},
+{
+ "Year":           1921,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 31.91334490367 
+},
+{
+ "Year":           1921,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 30.53400503778 
+},
+{
+ "Year":           1931,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 32.79208385845 
+},
+{
+ "Year":           1931,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 31.75110202706 
+},
+{
+ "Year":           1951,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 36.54079298373 
+},
+{
+ "Year":           1951,
+"Sex": "Uomini",
+"mean":             50,
+"wmean":  35.0927043197 
+},
+{
+ "Year":           1961,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 37.64101878015 
+},
+{
+ "Year":           1961,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 35.22796050946 
+},
+{
+ "Year":           1971,
+"Sex": "Donne",
+"mean":           47.5,
+"wmean": 38.00351554655 
+},
+{
+ "Year":           1971,
+"Sex": "Uomini",
+"mean":           47.5,
+"wmean":  34.6583708681 
+},
+{
+ "Year":           1981,
+"Sex": "Donne",
+"mean":           49.5,
+"wmean": 40.84927471547 
+},
+{
+ "Year":           1981,
+"Sex": "Uomini",
+"mean":           49.5,
+"wmean": 36.80095159832 
+},
+{
+ "Year":           1991,
+"Sex": "Donne",
+"mean":             50,
+"wmean":  44.5937921857 
+},
+{
+ "Year":           1991,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 40.19610782885 
+},
+{
+ "Year":           2001,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 47.05866437441 
+},
+{
+ "Year":           2001,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 42.60575505692 
+},
+{
+ "Year":           2011,
+"Sex": "Donne",
+"mean":             50,
+"wmean": 47.62909649169 
+},
+{
+ "Year":           2011,
+"Sex": "Uomini",
+"mean":             50,
+"wmean": 43.39912182561 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        
+          
+        
+
+        
+        
+        
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
   </article>
   <!-- Presenter Notes -->
 </slide>
@@ -102,32 +514,26 @@
     <ul>
       <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=1 title='Read-And-Delete'>
+        data-slide=1 title='Data'>
          1
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Slide 2'>
+        data-slide=2 title='Graph whith the Age distribution by Year'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Slide 4'>
+        data-slide=3 title=''>
          3
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=4 title='Slide 5'>
+        data-slide=4 title=''>
          4
-      </a>
-    </li>
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=5 title=''>
-         5
       </a>
     </li>
   </ul>
@@ -139,6 +545,11 @@
   <![endif]-->
 </body>
   <!-- Load Javascripts for Widgets -->
+  
+  <script src="shared/shiny.js" type="text/javascript"></script>
+  <script src="shared/slider/js/jquery.slider.min.js"></script>
+  <script src="shared/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="shared/slider/css/jquery.slider.min.css"></link>
   
   <!-- LOAD HIGHLIGHTER JS FILES -->
   <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>

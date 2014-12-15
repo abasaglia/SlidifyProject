@@ -1,38 +1,117 @@
 ---
 title       : Developing Data Products - Course Project
-subtitle    : Italian historic population surveys - population by age (1881-2011)
+subtitle    : Milano  City. Historic population surveys - population by age (1881-2011)
 author      : abasaglia
 job         : 
 framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : tomorrow      # 
-widgets     : []            # {mathjax, quiz, bootstrap}
+widgets     : [shiny]            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
+ext_widgets: {rCharts: [libraries/nvd3]}
 ---
 
-## Read-And-Delete
+## Data
 
-1. Edit YAML front matter
-2. Write using R Markdown
-3. Use an empty line followed by three dashes to separate slides!
+The data has been downloaded from http://dati.comune.milano.it/dato/item/300-300%20-%20Popolazione:%20censimenti%20storici%20-%20popolazione%20per%20et%C3%A0%20(1881-2011).html
 
---- .class #id 
+This dataset contains the Italian historic population surveys for the Milano City.
 
-## Slide 2 
+Every row contains:
+- Year of the survey (no survey for 1891 and 1941)
+- Age
+- Sex
+- How many people with that age and sex
 
---- .class #id 
+--- 
 
-## Slide 3
+## Graph whith the Age distribution by Year
+```{r opts.label = 'shiny'}
+slidifyUI(
+  sidebarPanel(
+    sliderInput('YYYY', 'Year', value = 1881, min = 1881, max = 2011, step = 10,)
+    #selectInput('sex', 'Choose Sex', c('Male', 'Female')),
+#     selectInput('type', 'Choose Type',
+#       c('multiBarChart', 'multiBarHorizontalChart',"line", "lineChart", "scatter","lineWithFocusChart","multiChart")
+#     )
+  ),
+  mainPanel(
+    tags$div(id = 'nvd3plot', class='shiny-html-output nvd3 rChart')
+  )
+)
+```
 
---- .class #id 
+--- 
 
-## Slide 4
+```{r results='hide', echo=FALSE, error=FALSE,warning=FALSE}
+library(reshape2)
+library(ggplot2)
+library(data.table)
 
---- .class #id 
+cleanEta <- function (df) {
+  res <- data.frame(Year=character(),Age=numeric(),Sex=character(),HowMany=numeric(),stringsAsFactors=FALSE)
+  for (r in 1:nrow(df)) {  
+    row <- df[r,]
+    y<-row[[1]]#$Anno.di.censimento  
+    e<-row[[2]]#$Età
+    s<-row[[3]]#$Genere
+    v<-row[[4]]#$Numerosità
+    if (is.na(as.numeric(e))) {
+      if (grepl("\\d* e.*", e, perl=TRUE)) {
+        # cases where age is "xx e più" return xx
+        res<-rbindlist(list(res, as.list(c(y, sub("(\\d*) e.*", "\\1", e, perl=TRUE), s, v))))
+      } else if (e == 'Età ignota') {
+        #age not known discard value
+      } else if (grepl("\\d\\d-\\d\\d", e, perl=TRUE)) {
+        #case where age is xx-yy
+        xy<-unlist(strsplit (e,"-"))
+        nl<-xy[1]:xy[2]
+        for (i in nl) {
+          res<-rbindlist(list(res, as.list(c(y, i, s, as.numeric(v)/length(nl)))))
+        }
+      }
+    } else {
+      res<-rbindlist(list(res, as.list(c(y, e, s, v))))
+    }
+  }
+  res$HowMany<-as.numeric(res$HowMany)
+  return (res)
+}
+df<-read.csv2(".//Censimento_eta_1881-2011.csv",sep=';',colClasses=c("character", "character","character","numeric"))
+x<-cleanEta(df)
+x$Year<-as.numeric(x$Year)
+x$Age<-as.numeric(x$Age)
+```
 
-## Slide 5
+Milano - Total population by Year
+```{r echo = F, results = 'asis'}
+require(rCharts)
+x2<-aggregate (x$HowMany, by=list(x$Year, x$Sex), FUN=sum) 
+
+n1 <- nPlot(x ~ Group.1, group = 'Group.2',type = 'lineChart',
+    data = x2
+)
+n1$set(dom = 'nvd3plot', width = 600)
+n1$print('chart1')
+rm(n1)
+```
+
+---
+
+Milano - Mean Age by Year
+```{r echo = F, results = 'asis'}
+require(rCharts)
+library(plyr)
+x3<-ddply(x, .(Year, Sex), summarize, 
+      mean = mean(Age),
+      wmean = weighted.mean(Age, w=HowMany))
 
 
-
+n2 <- nPlot(wmean ~ Year, group = 'Sex', type = 'lineChart',
+    data = x3
+)
+n2$set(dom = 'nvd3plot', width = 600)
+n2$print('chart2')
+```
 
