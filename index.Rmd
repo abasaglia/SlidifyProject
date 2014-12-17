@@ -26,24 +26,6 @@ Every row contains:
 
 --- 
 
-## Milano - Graph whith the Age distribution by Year
-```{r opts.label = 'shiny'}
-slidifyUI(
-  sidebarPanel(
-    sliderInput('YYYY', 'Year', value = 1881, min = 1881, max = 2011, step = 10,)
-    #selectInput('sex', 'Choose Sex', c('Male', 'Female')),
-#     selectInput('type', 'Choose Type',
-#       c('multiBarChart', 'multiBarHorizontalChart',"line", "lineChart", "scatter","lineWithFocusChart","multiChart")
-#     )
-  ),
-  mainPanel(
-    tags$div(id = 'nvd3plot', class='shiny-html-output nvd3 rChart')
-  )
-)
-```
-
---- 
-
 ```{r results='hide', echo=FALSE, error=FALSE,warning=FALSE}
 library(reshape2)
 library(ggplot2)
@@ -84,17 +66,32 @@ x$Year<-as.numeric(x$Year)
 x$Age<-as.numeric(x$Age)
 ```
 
+## Milano - Graph whith the Age distribution by Year
+```{r echo = F, results = 'asis'}
+require(rCharts)
+x1<-aggregate (x$HowMany, by=list(x$Year, x$Age), FUN=sum) 
+
+n1 <- nPlot(x ~ Group.2, group = 'Group.1',type = 'lineChart',
+    data = x1
+)
+n1$set(dom = 'nvd3plot', width = 600)
+n1$print('chart1')
+rm(n1)
+```
+
+--- 
+
 Milano - Total population by Year
 ```{r echo = F, results = 'asis'}
 require(rCharts)
 x2<-aggregate (x$HowMany, by=list(x$Year, x$Sex), FUN=sum) 
 
-n1 <- nPlot(x ~ Group.1, group = 'Group.2',type = 'lineChart',
+n2 <- nPlot(x ~ Group.1, group = 'Group.2',type = 'lineChart',
     data = x2
 )
-n1$set(dom = 'nvd3plot', width = 600)
-n1$print('chart1')
-rm(n1)
+n2$set(dom = 'nvd3plot', width = 600)
+n2$print('chart2')
+rm(n2)
 ```
 
 ---
@@ -108,10 +105,10 @@ x3<-ddply(x, .(Year, Sex), summarize,
       wmean = weighted.mean(Age, w=HowMany))
 
 
-n2 <- nPlot(wmean ~ Year, group = 'Sex', type = 'lineChart',
+n3 <- nPlot(wmean ~ Year, group = 'Sex', type = 'lineChart',
     data = x3
 )
-n2$set(dom = 'nvd3plot', width = 600)
-n2$print('chart2')
+n3$set(dom = 'nvd3plot', width = 600)
+n3$print('chart3')
 ```
 
